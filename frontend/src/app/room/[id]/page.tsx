@@ -30,7 +30,12 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
       return;
     }
     const protocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsBase = process.env.NEXT_PUBLIC_WS_URL || `${protocol}//localhost:8000`;
+    let wsBase = process.env.NEXT_PUBLIC_WS_URL || `${protocol}//localhost:8000`;
+    
+    // Clean up base URL to prevent double /ws/ws issues
+    if (wsBase.endsWith('/')) wsBase = wsBase.slice(0, -1);
+    if (wsBase.endsWith('/ws')) wsBase = wsBase.slice(0, -3);
+    
     setWsUrl(`${wsBase}/ws/${roomId}/${encodeURIComponent(playerName)}`);
   }, [playerName, roomId, router]);
 
