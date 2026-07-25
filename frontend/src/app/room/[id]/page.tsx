@@ -132,15 +132,14 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
           </div>
           <motion.div
             animate={isUrgent ? {
-              color: ['#ef4444', '#f87171', '#ef4444'],
               scale: [1, 1.05, 1],
-            } : {}}
+            } : { scale: 1 }}
             transition={isUrgent ? {
               duration: 1,
               repeat: Infinity,
               ease: 'easeInOut',
-            } : {}}
-            className={`text-xl md:text-2xl font-mono font-bold ${
+            } : { duration: 0.3 }}
+            className={`text-xl md:text-2xl font-mono font-bold transition-colors ${
               isUrgent ? 'text-red-500' : isPaused ? 'text-slate-500' : 'text-slate-200'
             }`}
           >
