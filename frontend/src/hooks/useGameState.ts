@@ -99,12 +99,12 @@ export function useGameState() {
       case 'ROUND_END':
         if (!event.is_last_round) {
           playRoundEndSound();
+          setWinMessage({
+            title: "Round Over!",
+            word: event.word,
+            subtitle: "Next round starts in 10s..."
+          });
         }
-        setWinMessage({
-          title: "Round Over!",
-          word: event.word,
-          subtitle: "Next round starts in 10s..."
-        });
         setPlayers(prev => {
           const next = { ...prev };
           Object.entries(event.total_scores).forEach(([player, score]) => {
@@ -115,11 +115,13 @@ export function useGameState() {
           return next;
         });
         // Clear feeds for the next round
-        setTimeout(() => {
-          setGlobalFeeds([]);
-          setPersonalFeeds([]);
-          setWinMessage(null);
-        }, 9000); // Clear just before next round starts
+        if (!event.is_last_round) {
+          setTimeout(() => {
+            setGlobalFeeds([]);
+            setPersonalFeeds([]);
+            setWinMessage(null);
+          }, 9000); // Clear just before next round starts
+        }
         break;
 
       case 'GAME_OVER':
