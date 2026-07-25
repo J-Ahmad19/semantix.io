@@ -36,6 +36,10 @@ export interface SyncEvent extends BaseEvent {
   players: string[];
   host: string;
   game_started: boolean;
+  settings: {
+    rounds: number;
+    time: number;
+  };
 }
 
 export interface RoundEndEvent extends BaseEvent {
@@ -43,6 +47,7 @@ export interface RoundEndEvent extends BaseEvent {
   word: string;
   scores_awarded: Record<string, number>;
   total_scores: Record<string, number>;
+  is_last_round: boolean;
 }
 
 export interface GameOverEvent extends BaseEvent {

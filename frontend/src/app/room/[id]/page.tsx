@@ -51,6 +51,10 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
     sendMessage('START_GAME', {});
   };
 
+  const handleUpdateSettings = (rounds: number, time: number) => {
+    sendMessage('UPDATE_SETTINGS', { settings: { rounds, time } });
+  };
+
   if (!playerName) return null;
 
   if (!gameState.gameStarted) {
@@ -61,6 +65,8 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         host={gameState.host}
         currentPlayer={playerName}
         onStartGame={handleStartGame}
+        settings={gameState.settings}
+        onUpdateSettings={handleUpdateSettings}
       />
     );
   }

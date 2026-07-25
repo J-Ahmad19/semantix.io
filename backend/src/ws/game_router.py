@@ -35,8 +35,20 @@ async def websocket_endpoint(websocket: WebSocket, lobby_id: str, player_name: s
                         await lobby_manager.start_game(lobby_id)
                     continue
 
+                if payload.get("type") == "UPDATE_SETTINGS":
+                    if player_name == lobby.host:
+                        settings = payload.get("settings", {})
+                        lobby.max_rounds = int(settings.get("rounds", lobby.max_rounds))
+                        lobby.base_time = int(settings.get("time", lobby.base_time))
+                        await lobby_manager.sync_players(lobby_id)
+                    continue
+
                 if payload.get("type") == "PLAY_AGAIN":
                     lobby.game_started = False
+                    lobby.scores = {}
+                    lobby.round_number = 1
+                    lobby.best_guesses = {}
+                    lobby.revealed_indices = []
                     # Broadcast sync so everyone goes back to waiting room
                     await lobby_manager.sync_players(lobby_id)
                     continue

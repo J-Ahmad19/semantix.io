@@ -18,6 +18,7 @@ class Lobby:
         self.connections: Dict[WebSocket, str] = {}
         self.target_word: str = ""
         self.target_vector = None
+        self.base_time: int = 60
         self.time_left: int = 60
         self.timer_task: Optional[asyncio.Task] = None
         self.round_number: int = 1
@@ -71,11 +72,13 @@ class LobbyManager:
                 lobby.scores[player] = lobby.scores.get(player, 0)
                 
         # Broadcast round end
+        is_last_round = lobby.round_number >= lobby.max_rounds
         await self.broadcast(lobby_id, {
             "type": "ROUND_END", 
             "word": lobby.target_word,
             "scores_awarded": scores_awarded,
-            "total_scores": lobby.scores
+            "total_scores": lobby.scores,
+            "is_last_round": is_last_round
         })
         
         if lobby.round_number >= lobby.max_rounds:
@@ -112,7 +115,7 @@ class LobbyManager:
         # Reset state
         lobby.target_word = random.choice(WORDS)
         lobby.target_vector = nlp_engine.get_embedding(lobby.target_word)
-        lobby.time_left = 60
+        lobby.time_left = lobby.base_time
         lobby.best_guesses = {}
         lobby.revealed_indices = []
         
@@ -171,7 +174,8 @@ class LobbyManager:
             sync_event = SyncEvent(
                 players=players,
                 host=lobby.host or "",
-                game_started=lobby.game_started
+                game_started=lobby.game_started,
+                settings={"rounds": lobby.max_rounds, "time": lobby.base_time}
             ).model_dump()
             await self.broadcast(lobby_id, sync_event)
 

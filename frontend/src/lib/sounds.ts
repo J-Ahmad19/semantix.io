@@ -61,27 +61,36 @@ export const playStartGameSound = () => {
   osc.stop(ctx.currentTime + notes.length * stepLength);
 };
 
-// 3. Game Over Sound - Descending chromatic / Death sound
+// 3. Game Over Sound - Triumphant Fanfare
 export const playGameOverSound = () => {
   const ctx = getAudioContext();
   if (!ctx) return;
-  const osc = ctx.createOscillator();
-  const gainNode = ctx.createGain();
   
-  osc.type = 'sawtooth';
+  // Triumphant arpeggio: C5, E5, G5, C6 (held)
+  const notes = [523.25, 659.25, 783.99, 1046.50];
+  const stepLength = 0.12;
   
-  osc.frequency.setValueAtTime(300, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 1.5);
-  
-  gainNode.gain.setValueAtTime(0, ctx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.1);
-  gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
-  
-  osc.connect(gainNode);
-  gainNode.connect(ctx.destination);
-  
-  osc.start();
-  osc.stop(ctx.currentTime + 1.5);
+  notes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    
+    const startTime = ctx.currentTime + (i * stepLength);
+    // If it's the last note, hold it longer
+    const duration = (i === notes.length - 1) ? 1.5 : stepLength;
+    
+    gainNode.gain.setValueAtTime(0, startTime);
+    gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
+    gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+    
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  });
 };
 
 // 4. Hot Guess Sound - Quick positive blip

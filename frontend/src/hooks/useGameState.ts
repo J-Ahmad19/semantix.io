@@ -18,6 +18,7 @@ export function useGameState() {
   const [hint, setHint] = useState<string>("");
   const [host, setHost] = useState<string>("");
   const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [settings, setSettings] = useState<{rounds: number, time: number}>({ rounds: 3, time: 60 });
 
   const handleEvent = useCallback((event: GameEvent, currentPlayerName: string) => {
     switch (event.type) {
@@ -29,12 +30,18 @@ export function useGameState() {
               next[p] = { name: p, score: 0, active: true };
             } else {
               next[p].active = true;
+              if (!event.game_started) {
+                next[p].score = 0;
+              }
             }
           });
           return next;
         });
         setHost(event.host);
         setGameStarted(event.game_started);
+        if (event.settings) {
+          setSettings(event.settings);
+        }
         setGameOver(null);
         setWinMessage(null);
         break;
@@ -90,7 +97,9 @@ export function useGameState() {
         break;
 
       case 'ROUND_END':
-        playRoundEndSound();
+        if (!event.is_last_round) {
+          playRoundEndSound();
+        }
         setWinMessage({
           title: "Round Over!",
           word: event.word,
@@ -146,6 +155,7 @@ export function useGameState() {
     hint,
     host,
     gameStarted,
+    settings,
     handleEvent
   };
 }

@@ -37,6 +37,7 @@ class SyncEvent(BaseEvent):
     players: list[str]
     host: str
     game_started: bool
+    settings: dict[str, int]
 
 class RoundEndEvent(BaseEvent):
     type: str = "ROUND_END"
