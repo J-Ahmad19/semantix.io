@@ -10,7 +10,8 @@ class NLPEngine:
         print("Loading lightweight FastEmbed NLP Model (ONNX)...")
         from fastembed import TextEmbedding
         # Use the highly optimized BAAI/bge-small-en-v1.5 model
-        self.model = TextEmbedding("BAAI/bge-small-en-v1.5")
+        # VERY IMPORTANT: Set threads=1 so ONNX doesn't try to use 32 host CPU cores and crash Render!
+        self.model = TextEmbedding("BAAI/bge-small-en-v1.5", threads=1)
         print("FastEmbed NLP Model loaded successfully.")
 
     def get_embedding(self, text: str) -> np.ndarray:
