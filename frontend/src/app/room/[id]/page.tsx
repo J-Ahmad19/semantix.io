@@ -29,7 +29,9 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
       router.push('/');
       return;
     }
-    setWsUrl(`ws://localhost:8000/ws/${roomId}/${encodeURIComponent(playerName)}`);
+    const protocol = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsBase = process.env.NEXT_PUBLIC_WS_URL || `${protocol}//localhost:8000`;
+    setWsUrl(`${wsBase}/ws/${roomId}/${encodeURIComponent(playerName)}`);
   }, [playerName, roomId, router]);
 
   const gameState = useGameState();
