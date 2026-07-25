@@ -6,18 +6,20 @@ class NLPEngine:
         self.model = None
 
     def load_model(self):
-        """Loads the sentence transformer model into memory."""
-        print(f"Loading NLP Model: {settings.MODEL_NAME}")
-        # IMPORT HERE to prevent PyTorch from blocking server startup on small instances
-        from sentence_transformers import SentenceTransformer
-        self.model = SentenceTransformer(settings.MODEL_NAME)
-        print("NLP Model loaded successfully.")
+        """Loads the fastembed model into memory."""
+        print("Loading lightweight FastEmbed NLP Model (ONNX)...")
+        from fastembed import TextEmbedding
+        # Use the highly optimized BAAI/bge-small-en-v1.5 model
+        self.model = TextEmbedding("BAAI/bge-small-en-v1.5")
+        print("FastEmbed NLP Model loaded successfully.")
 
     def get_embedding(self, text: str) -> np.ndarray:
         """Returns the embedding vector for the given text."""
         if self.model is None:
             raise RuntimeError("Model is not loaded.")
-        return self.model.encode(text)
+        # FastEmbed returns a generator of numpy arrays
+        embeddings = list(self.model.embed([text]))
+        return embeddings[0]
 
     def calculate_similarity(self, guess: str, target_vector: np.ndarray) -> int:
         """
