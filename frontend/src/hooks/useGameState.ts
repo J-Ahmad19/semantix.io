@@ -1,37 +1,19 @@
 import { useState, useCallback } from 'react';
 import { GameEvent, Player, GuessResult } from '../types/game';
-const playSuccessSound = () => {
-  try {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(440, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
-    
-    gainNode.gain.setValueAtTime(0, ctx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
-    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
-    
-    osc.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    osc.start();
-    osc.stop(ctx.currentTime + 0.3);
-  } catch (e) {
-    console.error("Audio playback failed", e);
-  }
-};
+import { playMatchSound, playHotGuessSound, playColdGuessSound, playGameOverSound, playRoundEndSound } from '../lib/sounds';
+
+export interface WinMessageData {
+  title: string;
+  word?: string;
+  subtitle?: string;
+}
 
 export function useGameState() {
   const [players, setPlayers] = useState<Record<string, Player>>({});
   const [globalFeeds, setGlobalFeeds] = useState<GuessResult[]>([]);
   const [personalFeeds, setPersonalFeeds] = useState<GuessResult[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(60);
-  const [winMessage, setWinMessage] = useState<string | null>(null);
+  const [winMessage, setWinMessage] = useState<WinMessageData | null>(null);
   const [gameOver, setGameOver] = useState<{ winners: string[], totalScores: Record<string, number> } | null>(null);
   const [hint, setHint] = useState<string>("");
   const [host, setHost] = useState<string>("");
@@ -87,23 +69,33 @@ export function useGameState() {
           setGlobalFeeds(prev => [result, ...prev]);
         }
 
-        // Play sound if 100%
-        if (event.score === 100) {
-          playSuccessSound();
-        }
-
-        // Add to personal feed if it's the current player
+        // Add to personal feed if it's the current player, and play sounds
         if (event.player === currentPlayerName) {
           setPersonalFeeds(prev => [result, ...prev]);
+          if (event.score === 100) {
+            playMatchSound();
+          } else if (event.score >= 50) {
+            playHotGuessSound();
+          } else {
+            playColdGuessSound();
+          }
         }
         break;
 
       case 'ROUND_WIN':
-        setWinMessage(`${event.player} won the round with the word "${event.word}"!`);
+        setWinMessage({
+          title: `${event.player} won the round!`,
+          word: event.word
+        });
         break;
 
       case 'ROUND_END':
-        setWinMessage(`Round Over! The target word was "${event.word}". Next round starts in 10s.`);
+        playRoundEndSound();
+        setWinMessage({
+          title: "Round Over!",
+          word: event.word,
+          subtitle: "Next round starts in 10s..."
+        });
         setPlayers(prev => {
           const next = { ...prev };
           Object.entries(event.total_scores).forEach(([player, score]) => {
@@ -122,6 +114,7 @@ export function useGameState() {
         break;
 
       case 'GAME_OVER':
+        playGameOverSound();
         setGameOver({ winners: event.winners, totalScores: event.total_scores });
         setPlayers(prev => {
           const next = { ...prev };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Player } from '@/types/game';
+import { playStartGameSound } from '@/lib/sounds';
 
 interface WaitingRoomProps {
   roomId: string;
@@ -12,6 +13,11 @@ interface WaitingRoomProps {
 export function WaitingRoom({ roomId, players, host, currentPlayer, onStartGame }: WaitingRoomProps) {
   const playerList = Object.values(players);
   const isHost = currentPlayer === host;
+
+  const handleStartClick = () => {
+    playStartGameSound();
+    onStartGame();
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full bg-game-bg text-white p-6">
@@ -48,7 +54,7 @@ export function WaitingRoom({ roomId, players, host, currentPlayer, onStartGame 
         
         {isHost ? (
           <button 
-            onClick={onStartGame}
+            onClick={handleStartClick}
             className="w-full py-4 bg-game-cold text-game-bg font-display font-bold uppercase rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all tracking-widest"
           >
             Start Game

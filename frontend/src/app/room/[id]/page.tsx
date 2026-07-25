@@ -95,15 +95,29 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: [0.5, 1.2, 1], opacity: 1 }}
               transition={{ duration: 0.6, ease: 'backOut' }}
-              className="bg-slate-900 border-2 border-yellow-400 shadow-[0_0_100px_rgba(250,204,21,0.6)] rounded-3xl p-10 max-w-xl w-full mx-4 text-center"
+              className="bg-game-surface border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] rounded-3xl p-10 max-w-xl w-full mx-4 text-center"
             >
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 to-yellow-600 bg-clip-text text-transparent leading-tight drop-shadow-lg"
+                className="flex flex-col items-center gap-6"
               >
-                {gameState.winMessage}
+                <div className="text-3xl md:text-4xl font-display font-bold text-white uppercase tracking-wider drop-shadow-md">
+                  {gameState.winMessage.title}
+                </div>
+                
+                {gameState.winMessage.word && (
+                  <div className="text-5xl md:text-6xl font-sans font-black text-game-match drop-shadow-[0_0_15px_rgba(0,255,0,0.5)] tracking-wide bg-black/30 px-8 py-4 rounded-2xl border-4 border-game-match/50">
+                    {gameState.winMessage.word.toUpperCase()}
+                  </div>
+                )}
+                
+                {gameState.winMessage.subtitle && (
+                  <div className="text-xl md:text-2xl font-mono text-game-warm font-bold mt-2 animate-pulse">
+                    {gameState.winMessage.subtitle}
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           </motion.div>
