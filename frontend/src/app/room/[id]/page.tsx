@@ -136,9 +136,9 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
       </AnimatePresence>
 
       {/* Header */}
-      <header className="flex items-center justify-between mb-3 md:mb-4 px-3 md:px-5 py-2.5 md:py-3 bg-slate-900 rounded-xl border border-slate-800 shadow-md shrink-0">
+      <header className="flex items-center justify-between mb-3 md:mb-4 px-3 md:px-5 py-2.5 md:py-3 bg-game-surface rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] shrink-0">
         <div className="flex items-center gap-3 md:gap-4 min-w-0">
-          <h1 className="text-lg md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent whitespace-nowrap">
+          <h1 className="text-xl md:text-3xl font-display font-bold text-game-cold drop-shadow-md whitespace-nowrap uppercase tracking-tighter">
             Semantix.io
           </h1>
           <div className="hidden sm:block px-3 py-1 bg-slate-800 rounded-md font-mono text-xs md:text-sm text-slate-400">
@@ -184,9 +184,9 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
             exit={{ opacity: 0, y: -10 }}
             className="flex justify-center mb-3 md:mb-4 shrink-0"
           >
-            <div className="px-5 py-2.5 bg-slate-900 border border-indigo-500/30 rounded-xl shadow-[0_0_15px_rgba(99,102,241,0.15)] flex items-center gap-4">
-              <span className="text-slate-500 font-medium uppercase text-xs tracking-widest hidden sm:inline">Target</span>
-              <span className="text-xl md:text-2xl font-mono tracking-[0.4em] text-white font-bold">{gameState.hint}</span>
+            <div className="px-5 py-3 bg-game-surface border-4 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-4 flex-wrap justify-center">
+              <span className="text-game-warm font-sans font-bold uppercase text-sm tracking-widest hidden sm:inline shrink-0">Target</span>
+              <span className="text-2xl md:text-4xl font-mono tracking-[0.2em] text-white font-bold break-all">{gameState.hint}</span>
             </div>
           </motion.div>
         )}
@@ -260,7 +260,7 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
 
       {/* Bottom Bar: Input */}
       <footer className="mt-3 md:mt-4 shrink-0 pb-2">
-        <div className="bg-slate-900 p-2 md:p-3 rounded-xl border border-slate-800 shadow-xl max-w-3xl mx-auto">
+        <div className="bg-game-surface p-2 md:p-3 rounded-2xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] max-w-3xl mx-auto">
           <GuessInput 
             onGuess={handleGuess} 
             disabled={!isConnected || !!gameState.winMessage} 

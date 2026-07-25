@@ -93,16 +93,15 @@ export function GuessInput({ onGuess, disabled, previousGuesses = [] }: GuessInp
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
-          className="flex-1 text-base h-12 bg-slate-800/80 border-slate-700 focus-visible:ring-blue-500 focus-visible:ring-2 placeholder:text-slate-500 transition-colors"
+          className="flex-1"
         />
       </motion.div>
       <Button
         type="submit"
         disabled={disabled || !guess.trim()}
-        className="h-12 px-6 bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all shadow-lg shadow-blue-500/20 font-bold tracking-wide"
       >
-        <SendHorizonal className="w-5 h-5 mr-2" />
-        Guess
+        <SendHorizonal className="w-6 h-6 mr-3" />
+        GUESS
       </Button>
     </form>
   );

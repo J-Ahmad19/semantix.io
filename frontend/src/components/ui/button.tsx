@@ -10,7 +10,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white shadow hover:bg-blue-600/90 h-9 px-4 py-2",
+          "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-game-cold disabled:pointer-events-none disabled:opacity-50 bg-game-cold text-game-bg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-game-cold/90 active:shadow-none active:translate-x-[4px] active:translate-y-[4px] h-12 px-6 py-3 font-sans tracking-widest uppercase",
           className
         )}
         {...props}

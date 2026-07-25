@@ -21,10 +21,10 @@ export function GlobalFeed({ feeds }: GlobalFeedProps) {
   }, [feeds]);
 
   return (
-    <Card className="flex flex-col h-full bg-slate-900 border-slate-800">
-      <CardHeader className="pb-3 border-b border-slate-800">
-        <CardTitle className="flex items-center text-lg text-slate-200">
-          Global Feed <span className="ml-2 text-xs text-slate-400 font-normal">(&ge;50% match)</span>
+    <Card className="flex flex-col h-full bg-game-surface border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-3xl">
+      <CardHeader className="pb-3 border-b-4 border-black">
+        <CardTitle className="flex items-center text-game-cold drop-shadow-md">
+          Global Feed <span className="ml-2 text-[10px] text-slate-400 font-sans tracking-normal font-bold normal-case">(&ge;50% match)</span>
         </CardTitle>
       </CardHeader>
       <CardContent 
@@ -52,30 +52,35 @@ export function GlobalFeed({ feeds }: GlobalFeedProps) {
               let wordStyle = "text-lg text-slate-300";
 
               if (guess.score === 100) {
-                // Blazing gold with scale bounce
-                colorClass = "text-yellow-400";
-                indicatorColor = "bg-yellow-400";
-                borderClass = "border-yellow-500/50";
-                bgClass = "bg-yellow-900/20";
+                // Match
+                colorClass = "text-game-match";
+                indicatorColor = "bg-game-match";
+                borderClass = "border-black";
+                bgClass = "bg-game-match/10";
                 Icon = Trophy;
                 isPerfect = true;
-                wordStyle = "text-lg italic text-yellow-400 font-bold drop-shadow-md";
+                wordStyle = "text-xl italic text-game-match font-bold drop-shadow-md";
               } else if (guess.score >= 80) {
-                // Pulsing red/orange gradient text
-                colorClass = "text-red-400";
-                indicatorColor = "bg-red-500";
-                borderClass = "border-red-500/20";
-                bgClass = "bg-red-950/20";
+                // Fire
+                colorClass = "text-game-fire";
+                indicatorColor = "bg-game-fire";
+                borderClass = "border-black";
+                bgClass = "bg-game-fire/10";
                 Icon = Flame;
-                wordStyle = "text-lg font-bold bg-gradient-to-r from-red-400 to-orange-500 bg-clip-text text-transparent animate-pulse";
+                wordStyle = "text-xl font-bold text-game-fire animate-pulse";
               } else if (guess.score >= 50) {
-                // Soft yellow/orange outline
-                colorClass = "text-orange-400";
-                indicatorColor = "bg-orange-500";
-                borderClass = "border-orange-500/30";
-                bgClass = "bg-slate-800/80";
+                // Hot
+                colorClass = "text-game-hot";
+                indicatorColor = "bg-game-hot";
+                borderClass = "border-black";
+                bgClass = "bg-game-surface";
                 Icon = ThermometerSun;
-                wordStyle = "text-lg text-orange-200";
+                wordStyle = "text-xl text-game-hot font-semibold";
+              } else {
+                // Cold
+                borderClass = "border-black";
+                bgClass = "bg-game-surface";
+                wordStyle = "text-xl text-slate-300";
               }
 
               return (
@@ -86,14 +91,14 @@ export function GlobalFeed({ feeds }: GlobalFeedProps) {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  className={`flex flex-col space-y-2 p-3 rounded-md border ${bgClass} ${borderClass}`}
+                  className={`flex flex-col space-y-2 p-3 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${bgClass} ${borderClass}`}
                 >
-                  <div className="flex justify-between items-center text-sm">
-                    <span className={`font-semibold ${isPerfect ? 'text-yellow-400' : 'text-slate-300'}`}>
+                  <div className="flex justify-between items-center text-base font-sans">
+                    <span className={`font-bold ${isPerfect ? 'text-game-match' : 'text-slate-100'}`}>
                       {guess.player}
                     </span>
                     <span className={`flex items-center font-bold ${colorClass}`}>
-                      <Icon className="w-4 h-4 mr-1" />
+                      <Icon className="w-5 h-5 mr-1" />
                       {guess.score}%
                     </span>
                   </div>

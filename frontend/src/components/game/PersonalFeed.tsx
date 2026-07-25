@@ -11,25 +11,25 @@ interface PersonalFeedProps {
 }
 
 function getScoreColor(score: number) {
-  if (score === 100) return 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]';
-  if (score >= 80) return 'bg-gradient-to-r from-red-500 to-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]';
-  if (score >= 50) return 'bg-orange-400';
-  return 'bg-blue-500';
+  if (score === 100) return 'bg-game-match shadow-[0_0_10px_#00FF00]';
+  if (score >= 80) return 'bg-game-fire shadow-[0_0_8px_#FF0055]';
+  if (score >= 50) return 'bg-game-hot shadow-[0_0_8px_#FF9900]';
+  return 'bg-game-cold';
 }
 
 function getScoreText(score: number) {
-  if (score === 100) return 'text-yellow-400 font-bold drop-shadow-sm';
-  if (score >= 80) return 'text-red-400 font-bold';
-  if (score >= 50) return 'text-orange-400 font-semibold';
-  return 'text-slate-400';
+  if (score === 100) return 'text-game-match font-bold drop-shadow-sm';
+  if (score >= 80) return 'text-game-fire font-bold';
+  if (score >= 50) return 'text-game-hot font-semibold';
+  return 'text-game-cold';
 }
 
 export function PersonalFeed({ feeds }: PersonalFeedProps) {
   return (
-    <Card className="flex flex-col h-full bg-slate-900 border-slate-800 shadow-xl">
-      <CardHeader className="pb-3 border-b border-slate-800">
-        <CardTitle className="flex items-center text-lg text-slate-200">
-          <Trophy className="w-5 h-5 mr-2 text-blue-400" />
+    <Card className="flex flex-col h-full bg-game-surface border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-3xl">
+      <CardHeader className="pb-3 border-b-4 border-black">
+        <CardTitle className="flex items-center text-game-match drop-shadow-md">
+          <Trophy className="w-5 h-5 mr-2" />
           Your Guesses
         </CardTitle>
       </CardHeader>
@@ -54,10 +54,10 @@ export function PersonalFeed({ feeds }: PersonalFeedProps) {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className="flex flex-col space-y-2 p-3 rounded-lg bg-slate-800/40 border border-slate-700/30 hover:bg-slate-800/60 transition-colors"
+                className="flex flex-col space-y-2 p-3 rounded-xl bg-game-surface border-2 border-black hover:bg-game-surface/80 transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
               >
-                <div className="flex justify-between items-center text-sm">
-                  <span className={`font-medium truncate max-w-[70%] ${guess.score === 100 ? 'text-yellow-400 font-bold italic' : 'text-slate-300'}`}>
+                <div className="flex justify-between items-center text-sm font-sans">
+                  <span className={`font-medium truncate max-w-[70%] text-lg ${guess.score === 100 ? 'text-game-match font-bold italic' : 'text-slate-200'}`}>
                     {guess.word}
                   </span>
                   <span className={`font-mono text-right ${getScoreText(guess.score)}`}>
