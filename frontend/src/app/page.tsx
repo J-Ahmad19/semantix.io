@@ -25,7 +25,7 @@ export default function Home() {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-game-hot/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
       
       <div className="bg-game-surface border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-3xl p-8 max-w-md w-full text-center z-10">
-        <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2 text-game-cold drop-shadow-md tracking-tighter uppercase break-words">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-2 text-game-cold drop-shadow-md tracking-tighter uppercase whitespace-nowrap">
           Semantix.io
         </h1>
         <p className="text-slate-400 mb-8 font-sans font-medium text-sm md:text-base">
