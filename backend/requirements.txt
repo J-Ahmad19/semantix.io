@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sentence-transformers
+redis
+sqlalchemy
+asyncpg
+websockets
+pydantic-settings

@@ -1,3 +1,8 @@
+import os
+# Set thread limits before any heavy ML libraries load to prevent deadlocks on 512MB RAM instances
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .core.nlp_engine import nlp_engine
