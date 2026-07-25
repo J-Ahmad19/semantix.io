@@ -4,13 +4,21 @@ from .core.nlp_engine import nlp_engine
 from .services.redis_client import redis_client
 from .ws.game_router import router as ws_router
 
+import asyncio
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     print("Starting up Semantix.io Backend...")
-    nlp_engine.load_model()
+    
+    def _load():
+        nlp_engine.load_model()
+    
+    # Load model in background thread to prevent Render port scan timeout
+    asyncio.create_task(asyncio.to_thread(_load))
+    
     await redis_client.connect()
-    print("Startup complete.")
+    print("Startup complete. Model loading in background...")
     
     yield
     

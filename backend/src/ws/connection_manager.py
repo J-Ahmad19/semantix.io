@@ -104,6 +104,10 @@ class LobbyManager:
         if lobby_id not in self.lobbies: return
         lobby = self.lobbies[lobby_id]
         
+        # Wait for model to load if it's still downloading in the background
+        while nlp_engine.model is None:
+            await asyncio.sleep(1)
+            
         lobby.game_started = True
         
         await self.sync_players(lobby_id)
