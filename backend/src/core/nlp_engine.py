@@ -1,5 +1,4 @@
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from ..core.config import settings
 
 class NLPEngine:
@@ -9,6 +8,8 @@ class NLPEngine:
     def load_model(self):
         """Loads the sentence transformer model into memory."""
         print(f"Loading NLP Model: {settings.MODEL_NAME}")
+        # IMPORT HERE to prevent PyTorch from blocking server startup on small instances
+        from sentence_transformers import SentenceTransformer
         self.model = SentenceTransformer(settings.MODEL_NAME)
         print("NLP Model loaded successfully.")
 
