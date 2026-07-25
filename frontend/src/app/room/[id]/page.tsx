@@ -11,7 +11,7 @@ import { GuessInput } from '@/components/game/GuessInput';
 import { GameOverScreen } from '@/components/game/GameOverScreen';
 import { WaitingRoom } from '@/components/game/WaitingRoom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wifi, WifiOff } from 'lucide-react';
+import { Wifi, WifiOff, X, ListOrdered } from 'lucide-react';
 
 export default function RoomPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -21,6 +21,8 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
   const roomId = resolvedParams.id;
 
   const [wsUrl, setWsUrl] = useState('');
+  const [activeTab, setActiveTab] = useState<'global' | 'personal'>('global');
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   useEffect(() => {
     if (!playerName) {
@@ -108,6 +110,31 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         )}
       </AnimatePresence>
 
+      {/* Mobile Leaderboard Modal */}
+      <AnimatePresence>
+        {showLeaderboard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="md:hidden absolute inset-0 z-40 flex flex-col bg-black/90 backdrop-blur-sm p-4 pt-10"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-white">Full Leaderboard</h2>
+              <button 
+                onClick={() => setShowLeaderboard(false)}
+                className="p-2 bg-slate-800 rounded-full text-slate-300 hover:text-white"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <Leaderboard players={gameState.players} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <header className="flex items-center justify-between mb-3 md:mb-4 px-3 md:px-5 py-2.5 md:py-3 bg-slate-900 rounded-xl border border-slate-800 shadow-md shrink-0">
         <div className="flex items-center gap-3 md:gap-4 min-w-0">
@@ -165,33 +192,59 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         )}
       </AnimatePresence>
 
-      {/* Main Game Area - Mobile: stacked, Desktop: flex */}
+      {/* Mobile Tab Switcher */}
+      <div className="md:hidden flex p-1 bg-slate-900 rounded-lg mb-3 shrink-0">
+        <button
+          onClick={() => setActiveTab('global')}
+          className={`flex-1 py-1.5 text-sm font-bold rounded-md transition-colors ${
+            activeTab === 'global' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400'
+          }`}
+        >
+          Global Feed
+        </button>
+        <button
+          onClick={() => setActiveTab('personal')}
+          className={`flex-1 py-1.5 text-sm font-bold rounded-md transition-colors ${
+            activeTab === 'personal' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400'
+          }`}
+        >
+          Your Guesses
+        </button>
+      </div>
+
+      {/* Main Game Area - Mobile: flex, Desktop: flex */}
       <main className="flex-1 min-h-0 flex flex-col md:flex-row gap-4 md:gap-6 w-full max-w-6xl mx-auto">
         {/* Leaderboard - hidden on mobile */}
         <div className="hidden md:flex md:flex-col w-64 shrink-0 min-h-0">
           <Leaderboard players={gameState.players} />
         </div>
 
-        {/* Global Feed - always visible, takes most space */}
-        <div className="flex-1 min-h-0">
+        {/* Global Feed - always visible on desktop, tab-based on mobile */}
+        <div className={`flex-1 min-h-0 ${activeTab === 'global' ? 'flex flex-col' : 'hidden md:flex md:flex-col'}`}>
           <GlobalFeed feeds={gameState.globalFeeds} />
         </div>
 
-        {/* Personal Feed - hidden on mobile */}
-        <div className="hidden md:flex md:flex-col w-64 shrink-0 min-h-0">
+        {/* Personal Feed - hidden on mobile unless activeTab is personal */}
+        <div className={`md:w-64 shrink-0 min-h-0 ${activeTab === 'personal' ? 'flex flex-col flex-1' : 'hidden md:flex md:flex-col'}`}>
           <PersonalFeed feeds={gameState.personalFeeds} />
         </div>
       </main>
 
       {/* Mobile: Bottom leaderboard ticker (compact) */}
       <div className="md:hidden mt-2 shrink-0">
-        <div className="flex gap-2 overflow-x-auto pb-1 px-1 scrollbar-hide">
+        <button 
+          onClick={() => setShowLeaderboard(true)}
+          className="w-full flex items-center gap-2 overflow-x-auto pb-1 px-1 scrollbar-hide active:opacity-70 transition-opacity"
+        >
+          <div className="flex items-center justify-center bg-slate-800 rounded-full p-1.5 shrink-0 text-slate-400">
+            <ListOrdered className="w-4 h-4" />
+          </div>
           {Object.values(gameState.players)
             .sort((a, b) => b.score - a.score)
             .map((player, i) => (
               <div
                 key={player.name}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap shrink-0 ${
                   i === 0
                     ? 'bg-yellow-900/20 border border-yellow-500/30 text-yellow-300'
                     : 'bg-slate-800/50 border border-slate-700/30 text-slate-400'
@@ -202,7 +255,7 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
                 <span className="font-mono font-bold">{player.score}</span>
               </div>
             ))}
-        </div>
+        </button>
       </div>
 
       {/* Bottom Bar: Input */}
